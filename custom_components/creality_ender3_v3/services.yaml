@@ -1,6 +1,6 @@
-send_gcode:
-  name: Send G-code
-  description: Send one or more raw G-code commands to the printer through Moonraker.
+set_nozzle_temperature:
+  name: Set nozzle temperature
+  description: Set the nozzle target temperature through Moonraker.
   fields:
     entity_id:
       name: Entity
@@ -9,18 +9,49 @@ send_gcode:
       selector:
         entity:
           integration: creality_ender3_v3
-    command:
-      name: Command
-      description: A single G-code command, or multiple commands separated by newlines.
-      example: G28
+    temperature:
+      name: Temperature
+      description: Target nozzle temperature in Celsius.
+      required: true
+      example: 200
       selector:
-        text:
-          multiline: true
-    commands:
-      name: Commands
-      description: A list of G-code commands to send in order.
-      example:
-        - M104 S200
-        - M140 S60
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: C
+          mode: box
+
+set_bed_temperature:
+  name: Set bed temperature
+  description: Set the bed target temperature through Moonraker.
+  fields:
+    entity_id:
+      name: Entity
+      description: Any entity belonging to the target Creality Ender-3 V3 device.
+      required: true
       selector:
-        object:
+        entity:
+          integration: creality_ender3_v3
+    temperature:
+      name: Temperature
+      description: Target bed temperature in Celsius.
+      required: true
+      example: 60
+      selector:
+        number:
+          min: 0
+          max: 130
+          unit_of_measurement: C
+          mode: box
+
+cooldown:
+  name: Cool down
+  description: Turn off the nozzle and bed heaters.
+  fields:
+    entity_id:
+      name: Entity
+      description: Any entity belonging to the target Creality Ender-3 V3 device.
+      required: true
+      selector:
+        entity:
+          integration: creality_ender3_v3

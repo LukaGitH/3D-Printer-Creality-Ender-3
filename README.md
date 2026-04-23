@@ -139,32 +139,36 @@ This integration is still intentionally small:
 - monitor printer state
 - view temperatures and print progress
 - view the LAN camera at `/webcam?action=stream`
-- send raw G-code commands through the `creality_ender3_v3.send_gcode` Home Assistant service
+- set nozzle temperature, set bed temperature, and cool down through Home Assistant services
 
-The G-code service explicitly blocks `M112`, so this integration does not expose an emergency-stop path.
+### Control temperatures from Home Assistant
 
-### Send G-code from Home Assistant
+Use one of the dedicated services and target any entity created by this integration.
 
-Use the `creality_ender3_v3.send_gcode` service and target any entity created by this integration.
-
-Single command example:
+Set nozzle example:
 
 ```yaml
-service: creality_ender3_v3.send_gcode
+service: creality_ender3_v3.set_nozzle_temperature
 data:
   entity_id: sensor.ender_3_v3_print_state
-  command: G28
+  temperature: 200
 ```
 
-Multiple commands example:
+Set bed example:
 
 ```yaml
-service: creality_ender3_v3.send_gcode
+service: creality_ender3_v3.set_bed_temperature
 data:
   entity_id: sensor.ender_3_v3_print_state
-  commands:
-    - M104 S200
-    - M140 S60
+  temperature: 60
+```
+
+Cool down example:
+
+```yaml
+service: creality_ender3_v3.cooldown
+data:
+  entity_id: sensor.ender_3_v3_print_state
 ```
 
 ## No history

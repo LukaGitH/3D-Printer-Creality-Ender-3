@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5
+
+- Replaced the raw G-code passthrough with dedicated Home Assistant services for nozzle temperature, bed temperature, and cooldown.
+
 ## 0.1.4
 
 - Added a service for sending raw G-code commands to the printer through Moonraker.

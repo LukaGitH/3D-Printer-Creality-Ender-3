@@ -179,6 +179,18 @@ class MoonrakerApiClient:
             json_payload={"script": normalized_script},
         )
 
+    async def async_set_nozzle_temperature(self, temperature: float) -> dict[str, Any]:
+        """Set the nozzle target temperature."""
+        return await self.async_send_gcode(f"M104 S{temperature:g}")
+
+    async def async_set_bed_temperature(self, temperature: float) -> dict[str, Any]:
+        """Set the bed target temperature."""
+        return await self.async_send_gcode(f"M140 S{temperature:g}")
+
+    async def async_cooldown(self) -> dict[str, Any]:
+        """Turn off active heater targets."""
+        return await self.async_send_gcode(["M104 S0", "M140 S0"])
+
     async def _async_detect_base_url(self) -> str:
         """Try common Moonraker endpoints until one responds."""
         auth_required = False
