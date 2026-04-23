@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Added a service for sending raw G-code commands to the printer through Moonraker.
+
 ## 0.1.3
 
 - Fixed camera entity initialization so Home Assistant can register the camera entity correctly.
