@@ -134,13 +134,38 @@ If none of those endpoints respond, the issue is usually on the printer side or 
 
 ## Current scope
 
-This integration is intentionally minimal and read-only:
+This integration is still intentionally small:
 
 - monitor printer state
 - view temperatures and print progress
 - view the LAN camera at `/webcam?action=stream`
+- send raw G-code commands through the `creality_ender3_v3.send_gcode` Home Assistant service
 
-Control actions can be added later once the monitoring path is stable across V3 variants.
+The G-code service explicitly blocks `M112`, so this integration does not expose an emergency-stop path.
+
+### Send G-code from Home Assistant
+
+Use the `creality_ender3_v3.send_gcode` service and target any entity created by this integration.
+
+Single command example:
+
+```yaml
+service: creality_ender3_v3.send_gcode
+data:
+  entity_id: sensor.ender_3_v3_print_state
+  command: G28
+```
+
+Multiple commands example:
+
+```yaml
+service: creality_ender3_v3.send_gcode
+data:
+  entity_id: sensor.ender_3_v3_print_state
+  commands:
+    - M104 S200
+    - M140 S60
+```
 
 ## No history
 

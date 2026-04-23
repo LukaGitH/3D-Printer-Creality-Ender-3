@@ -38,3 +38,12 @@ class CrealityEnder3V3Coordinator(DataUpdateCoordinator[dict[str, Any]]):
             return await self.client.async_fetch_data()
         except MoonrakerApiError as err:
             raise UpdateFailed(str(err)) from err
+
+    async def async_send_gcode(self, script: str | list[str]) -> None:
+        """Send G-code and refresh state."""
+        try:
+            await self.client.async_send_gcode(script)
+        except MoonrakerApiError as err:
+            raise UpdateFailed(str(err)) from err
+
+        await self.async_refresh()

@@ -160,6 +160,25 @@ class MoonrakerApiClient:
         )
         return response.get("status", response)
 
+    async def async_send_gcode(self, script: str | Sequence[str]) -> dict[str, Any]:
+        """Send raw G-code to Moonraker."""
+        if isinstance(script, str):
+            normalized_script = script.strip()
+        else:
+            normalized_script = "\n".join(line.strip() for line in script if line.strip())
+
+        if not normalized_script:
+            raise MoonrakerApiError("G-code command cannot be empty")
+
+        for line in normalized_script.splitlines():
+            if line.strip().upper() == "M112":
+                raise MoonrakerApiError("Emergency stop command M112 is not allowed")
+
+        return await self._async_post_json(
+            "/printer/gcode/script",
+            json_payload={"script": normalized_script},
+        )
+
     async def _async_detect_base_url(self) -> str:
         """Try common Moonraker endpoints until one responds."""
         auth_required = False
@@ -193,6 +212,34 @@ class MoonrakerApiClient:
         try:
             async with asyncio.timeout(10):
                 async with self.session.get(url, headers=self.request_headers) as response:
+                    if response.status in (401, 403):
+                        raise MoonrakerApiAuthRequired("Moonraker rejected the request")
+                    response.raise_for_status()
+                    payload = await response.json()
+        except MoonrakerApiAuthRequired:
+            raise
+        except (TimeoutError, ClientError, ValueError) as err:
+            raise MoonrakerApiCannotConnect(str(err)) from err
+
+        if "result" in payload:
+            return payload["result"]
+        return payload
+
+    async def _async_post_json(
+        self,
+        path: str,
+        *,
+        json_payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Perform a POST request and return JSON."""
+        url = f"{self.base_url.rstrip('/')}{path}"
+        try:
+            async with asyncio.timeout(10):
+                async with self.session.post(
+                    url,
+                    headers=self.request_headers,
+                    json=json_payload,
+                ) as response:
                     if response.status in (401, 403):
                         raise MoonrakerApiAuthRequired("Moonraker rejected the request")
                     response.raise_for_status()
