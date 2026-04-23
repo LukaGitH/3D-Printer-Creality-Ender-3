@@ -36,6 +36,7 @@ class CrealityEnder3V3Camera(
 
     def __init__(self, coordinator: CrealityEnder3V3Coordinator) -> None:
         """Initialize the camera."""
+        Camera.__init__(self)
         super().__init__(coordinator)
         self._attr_name = "Camera"
         self._attr_unique_id = f"{coordinator.device_unique_id}_camera"

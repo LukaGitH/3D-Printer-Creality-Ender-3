@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+- Fixed camera entity initialization so Home Assistant can register the camera entity correctly.
+
 ## 0.1.2
 
 - Fixed camera handling for Creality setups that expose the webcam through the Moonraker port at `:4408`.
