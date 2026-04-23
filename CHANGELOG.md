@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.7
+
+- Removed all heater control entities and services so the integration is monitoring-only again.
+- Kept the device configuration link to the detected printer URL for quick access.
+
 ## 0.1.6
 
 - Added device entities for nozzle target temperature, bed target temperature, and cooldown so printer controls appear directly under the Home Assistant device.

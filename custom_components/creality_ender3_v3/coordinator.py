@@ -38,39 +38,3 @@ class CrealityEnder3V3Coordinator(DataUpdateCoordinator[dict[str, Any]]):
             return await self.client.async_fetch_data()
         except MoonrakerApiError as err:
             raise UpdateFailed(str(err)) from err
-
-    async def async_send_gcode(self, script: str | list[str]) -> None:
-        """Send G-code and refresh state."""
-        try:
-            await self.client.async_send_gcode(script)
-        except MoonrakerApiError as err:
-            raise UpdateFailed(str(err)) from err
-
-        await self.async_refresh()
-
-    async def async_set_nozzle_temperature(self, temperature: float) -> None:
-        """Set nozzle temperature and refresh state."""
-        try:
-            await self.client.async_set_nozzle_temperature(temperature)
-        except MoonrakerApiError as err:
-            raise UpdateFailed(str(err)) from err
-
-        await self.async_refresh()
-
-    async def async_set_bed_temperature(self, temperature: float) -> None:
-        """Set bed temperature and refresh state."""
-        try:
-            await self.client.async_set_bed_temperature(temperature)
-        except MoonrakerApiError as err:
-            raise UpdateFailed(str(err)) from err
-
-        await self.async_refresh()
-
-    async def async_cooldown(self) -> None:
-        """Disable active heater targets and refresh state."""
-        try:
-            await self.client.async_cooldown()
-        except MoonrakerApiError as err:
-            raise UpdateFailed(str(err)) from err
-
-        await self.async_refresh()

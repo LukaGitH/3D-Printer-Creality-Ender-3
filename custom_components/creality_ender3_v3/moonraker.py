@@ -17,8 +17,8 @@ LOGGER = logging.getLogger(__name__)
 
 DEFAULT_OBJECTS: dict[str, Sequence[str] | None] = {
     "display_status": ("progress",),
-    "extruder": ("temperature", "target"),
-    "heater_bed": ("temperature", "target"),
+    "extruder": ("temperature",),
+    "heater_bed": ("temperature",),
     "print_stats": (
         "filename",
         "state",
@@ -159,37 +159,6 @@ class MoonrakerApiClient:
             f"/printer/objects/query?{urlencode(query, doseq=False)}"
         )
         return response.get("status", response)
-
-    async def async_send_gcode(self, script: str | Sequence[str]) -> dict[str, Any]:
-        """Send raw G-code to Moonraker."""
-        if isinstance(script, str):
-            normalized_script = script.strip()
-        else:
-            normalized_script = "\n".join(line.strip() for line in script if line.strip())
-
-        if not normalized_script:
-            raise MoonrakerApiError("G-code command cannot be empty")
-
-        for line in normalized_script.splitlines():
-            if line.strip().upper() == "M112":
-                raise MoonrakerApiError("Emergency stop command M112 is not allowed")
-
-        return await self._async_post_json(
-            "/printer/gcode/script",
-            json_payload={"script": normalized_script},
-        )
-
-    async def async_set_nozzle_temperature(self, temperature: float) -> dict[str, Any]:
-        """Set the nozzle target temperature."""
-        return await self.async_send_gcode(f"M104 S{temperature:g}")
-
-    async def async_set_bed_temperature(self, temperature: float) -> dict[str, Any]:
-        """Set the bed target temperature."""
-        return await self.async_send_gcode(f"M140 S{temperature:g}")
-
-    async def async_cooldown(self) -> dict[str, Any]:
-        """Turn off active heater targets."""
-        return await self.async_send_gcode(["M104 S0", "M140 S0"])
 
     async def _async_detect_base_url(self) -> str:
         """Try common Moonraker endpoints until one responds."""

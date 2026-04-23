@@ -7,11 +7,10 @@ It talks directly to a Moonraker-compatible API exposed by the printer and only 
 ## What it adds
 
 - Nozzle and bed temperature sensors
-- Nozzle and bed target temperature controls
 - Print state, current file, and progress
 - Printer state binary sensors
-- Cooldown button entity
 - Camera entity from the printer LAN UI
+- Device page link to the detected printer URL
 - HACS installable config flow
 
 ## Supported connection modes
@@ -140,40 +139,8 @@ This integration is still intentionally small:
 
 - monitor printer state
 - view temperatures and print progress
-- control nozzle and bed targets from device entities
-- trigger cooldown from a device button entity
 - view the LAN camera at `/webcam?action=stream`
-- set nozzle temperature, set bed temperature, and cool down through Home Assistant services
-
-### Control temperatures from Home Assistant
-
-Use one of the dedicated services and target any entity created by this integration.
-
-Set nozzle example:
-
-```yaml
-service: creality_ender3_v3.set_nozzle_temperature
-data:
-  entity_id: sensor.ender_3_v3_print_state
-  temperature: 200
-```
-
-Set bed example:
-
-```yaml
-service: creality_ender3_v3.set_bed_temperature
-data:
-  entity_id: sensor.ender_3_v3_print_state
-  temperature: 60
-```
-
-Cool down example:
-
-```yaml
-service: creality_ender3_v3.cooldown
-data:
-  entity_id: sensor.ender_3_v3_print_state
-```
+- open the detected printer URL from the Home Assistant device page
 
 ## No history
 
