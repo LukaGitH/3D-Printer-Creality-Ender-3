@@ -6,7 +6,7 @@ import asyncio
 import logging
 from collections.abc import Sequence
 from typing import Any
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urlencode, urljoin, urlparse
 
 from aiohttp import ClientError, ClientSession
 
@@ -81,10 +81,11 @@ class MoonrakerApiClient:
 
     async def async_fetch_data(self) -> dict[str, Any]:
         """Fetch all data needed by entities."""
-        server, printer, status = await asyncio.gather(
+        server, printer, status, camera = await asyncio.gather(
             self.async_fetch_server_info(),
             self.async_fetch_printer_info(),
             self.async_fetch_status(),
+            self.async_fetch_camera_info(),
         )
 
         print_stats = status.get("print_stats", {})
@@ -92,11 +93,7 @@ class MoonrakerApiClient:
         progress = display_status.get("progress")
 
         return {
-            "camera": {
-                "name": "Camera",
-                "snapshot_url": self._resolve_camera_url("/webcam?action=snapshot"),
-                "stream_url": self._resolve_camera_url("/webcam?action=stream"),
-            },
+            "camera": camera,
             "device": {
                 "manufacturer": "Creality",
                 "model": "Ender-3 V3 compatible printer",
@@ -126,6 +123,29 @@ class MoonrakerApiClient:
         """Fetch available printer objects."""
         response = await self._async_get_json("/printer/objects/list")
         return set(response.get("objects", []))
+
+    async def async_fetch_camera_info(self) -> dict[str, Any] | None:
+        """Fetch configured webcam info, with a legacy fallback."""
+        try:
+            response = await self._async_get_json("/server/webcams/list")
+        except MoonrakerApiError:
+            return self._fallback_camera_info()
+
+        webcams = response.get("webcams", [])
+        for webcam in webcams:
+            if not webcam.get("enabled", True):
+                continue
+
+            stream_url = self._resolve_camera_url(webcam.get("stream_url"))
+            snapshot_url = self._resolve_camera_url(webcam.get("snapshot_url"))
+            if stream_url or snapshot_url:
+                return {
+                    "name": webcam.get("name") or "Camera",
+                    "snapshot_url": snapshot_url,
+                    "stream_url": stream_url,
+                }
+
+        return self._fallback_camera_info()
 
     async def async_fetch_status(self) -> dict[str, Any]:
         """Fetch printer object status."""
@@ -190,7 +210,26 @@ class MoonrakerApiClient:
         """Resolve relative webcam URLs against the detected base URL."""
         if not value:
             return None
-        return urljoin(f"{self.base_url}/", value)
+        parsed = urlparse(value)
+        if parsed.scheme and parsed.netloc:
+            return value
+        return urljoin(f"{self._camera_base_url()}/", value)
+
+    def _camera_base_url(self) -> str:
+        """Build the base URL for relative webcam paths."""
+        parsed = urlparse(self.base_url)
+        hostname = parsed.hostname or self.normalized_host
+        if ":" in hostname and not hostname.startswith("["):
+            hostname = f"[{hostname}]"
+        return f"http://{hostname}"
+
+    def _fallback_camera_info(self) -> dict[str, Any]:
+        """Return a basic legacy webcam config."""
+        return {
+            "name": "Camera",
+            "snapshot_url": self._resolve_camera_url("/webcam?action=snapshot"),
+            "stream_url": self._resolve_camera_url("/webcam?action=stream"),
+        }
 
     @staticmethod
     def _normalize_host(host: str) -> str:
