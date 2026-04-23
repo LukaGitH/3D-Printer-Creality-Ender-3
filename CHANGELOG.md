@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6
+
+- Added device entities for nozzle target temperature, bed target temperature, and cooldown so printer controls appear directly under the Home Assistant device.
+
 ## 0.1.5
 
 - Replaced the raw G-code passthrough with dedicated Home Assistant services for nozzle temperature, bed temperature, and cooldown.

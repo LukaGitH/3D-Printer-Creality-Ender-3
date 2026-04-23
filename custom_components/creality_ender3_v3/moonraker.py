@@ -17,8 +17,8 @@ LOGGER = logging.getLogger(__name__)
 
 DEFAULT_OBJECTS: dict[str, Sequence[str] | None] = {
     "display_status": ("progress",),
-    "extruder": ("temperature",),
-    "heater_bed": ("temperature",),
+    "extruder": ("temperature", "target"),
+    "heater_bed": ("temperature", "target"),
     "print_stats": (
         "filename",
         "state",

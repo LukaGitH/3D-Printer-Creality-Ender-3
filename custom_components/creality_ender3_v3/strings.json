@@ -39,6 +39,19 @@
         "name": "Printing"
       }
     },
+    "button": {
+      "cooldown": {
+        "name": "Cooldown"
+      }
+    },
+    "number": {
+      "bed_target_temperature": {
+        "name": "Bed target temperature"
+      },
+      "nozzle_target_temperature": {
+        "name": "Nozzle target temperature"
+      }
+    },
     "sensor": {
       "bed_temperature": {
         "name": "Bed temperature"

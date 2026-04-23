@@ -7,8 +7,10 @@ It talks directly to a Moonraker-compatible API exposed by the printer and only 
 ## What it adds
 
 - Nozzle and bed temperature sensors
+- Nozzle and bed target temperature controls
 - Print state, current file, and progress
 - Printer state binary sensors
+- Cooldown button entity
 - Camera entity from the printer LAN UI
 - HACS installable config flow
 
@@ -138,6 +140,8 @@ This integration is still intentionally small:
 
 - monitor printer state
 - view temperatures and print progress
+- control nozzle and bed targets from device entities
+- trigger cooldown from a device button entity
 - view the LAN camera at `/webcam?action=stream`
 - set nozzle temperature, set bed temperature, and cool down through Home Assistant services
 
