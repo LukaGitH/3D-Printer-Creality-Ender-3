@@ -34,7 +34,10 @@ async def _validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str
     await client.async_initialize()
 
     printer = await client.async_fetch_printer_info()
-    machine = await client.async_fetch_system_info()
+    try:
+        machine = await client.async_fetch_system_info()
+    except MoonrakerApiError:
+        machine = {}
 
     cpu_info = machine.get("cpu_info", {})
     unique_id = (

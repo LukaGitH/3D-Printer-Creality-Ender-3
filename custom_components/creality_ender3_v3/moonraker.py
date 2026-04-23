@@ -118,6 +118,10 @@ class MoonrakerApiClient:
         """Fetch printer info."""
         return await self._async_get_json("/printer/info")
 
+    async def async_fetch_system_info(self) -> dict[str, Any]:
+        """Fetch machine system info when available."""
+        return await self._async_get_json("/machine/system_info")
+
     async def async_fetch_object_list(self) -> set[str]:
         """Fetch available printer objects."""
         response = await self._async_get_json("/printer/objects/list")
