@@ -207,28 +207,20 @@ class MoonrakerApiClient:
         return payload
 
     def _resolve_camera_url(self, value: str | None) -> str | None:
-        """Resolve relative webcam URLs against the detected base URL."""
+        """Resolve webcam URLs, preferring the detected Moonraker base URL."""
         if not value:
             return None
         parsed = urlparse(value)
         if parsed.scheme and parsed.netloc:
             return value
-        return urljoin(f"{self._camera_base_url()}/", value)
-
-    def _camera_base_url(self) -> str:
-        """Build the base URL for relative webcam paths."""
-        parsed = urlparse(self.base_url)
-        hostname = parsed.hostname or self.normalized_host
-        if ":" in hostname and not hostname.startswith("["):
-            hostname = f"[{hostname}]"
-        return f"http://{hostname}"
+        return urljoin(f"{self.base_url}/", value)
 
     def _fallback_camera_info(self) -> dict[str, Any]:
         """Return a basic legacy webcam config."""
         return {
             "name": "Camera",
-            "snapshot_url": self._resolve_camera_url("/webcam?action=snapshot"),
-            "stream_url": self._resolve_camera_url("/webcam?action=stream"),
+            "snapshot_url": urljoin(f"{self.base_url}/", "/webcam?action=snapshot"),
+            "stream_url": urljoin(f"{self.base_url}/", "/webcam?action=stream"),
         }
 
     @staticmethod

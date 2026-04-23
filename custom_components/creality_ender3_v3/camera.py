@@ -32,6 +32,7 @@ class CrealityEnder3V3Camera(
     """Camera entity backed by Moonraker webcam data."""
 
     _attr_has_entity_name = True
+    _attr_use_stream_for_stills = True
 
     def __init__(self, coordinator: CrealityEnder3V3Coordinator) -> None:
         """Initialize the camera."""

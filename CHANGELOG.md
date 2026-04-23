@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Fixed camera handling for Creality setups that expose the webcam through the Moonraker port at `:4408`.
+- Made the camera entity use the live stream as the still-image source when snapshot requests are unavailable or unreliable.
+
 ## 0.1.1
 
 - Fixed a config flow crash that showed up in Home Assistant as an unexpected error during setup.
