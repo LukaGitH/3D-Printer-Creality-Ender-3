@@ -1,0 +1,60 @@
+{
+  "title": "Creality Ender-3 V3",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add printer",
+        "description": "Enter the printer IP, hostname, or full URL.",
+        "data": {
+          "host": "Printer IP or URL",
+          "api_key": "Moonraker API key"
+        }
+      }
+    },
+    "error": {
+      "api_key_required": "Moonraker requires an API key",
+      "cannot_connect": "Cannot connect to the printer",
+      "unknown": "Unexpected error"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "data": {
+          "api_key": "Moonraker API key"
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "connected": {
+        "name": "Connected"
+      },
+      "paused": {
+        "name": "Paused"
+      },
+      "printing": {
+        "name": "Printing"
+      }
+    },
+    "sensor": {
+      "bed_temperature": {
+        "name": "Bed temperature"
+      },
+      "file_name": {
+        "name": "File name"
+      },
+      "nozzle_temperature": {
+        "name": "Nozzle temperature"
+      },
+      "print_state": {
+        "name": "Print state"
+      },
+      "progress": {
+        "name": "Progress"
+      }
+    }
+  }
+}
