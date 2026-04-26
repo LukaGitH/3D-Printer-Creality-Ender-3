@@ -155,6 +155,3 @@ recorder:
       - camera.ender_3_*
 ```
 
-## First release
-
-See [RELEASE_CHECKLIST.md](/home/luka/Projects/Creality/3D-Printer-Creality-Ender-3/RELEASE_CHECKLIST.md) before publishing `v0.1.0`.
